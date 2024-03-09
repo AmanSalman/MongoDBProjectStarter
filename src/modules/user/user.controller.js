@@ -1,4 +1,5 @@
 import { UserModel } from "../../../DB/models/user.model.js"
+import jwt from 'jsonwebtoken';
 
 export const getUsers = async (req,res)=>{
     try {
@@ -11,8 +12,7 @@ export const getUsers = async (req,res)=>{
 
 export const destroy = async (req,res)=> {
     try {
-        const {_id} = req.params;
-        const deleted = await UserModel.findByIdAndDelete(_id);
+        const deleted = await UserModel.findByIdAndDelete(req.userId);
         return res.json({message:"success", deleted});
     } catch (error) {
         return res.json({message:'err:', error})
@@ -21,11 +21,11 @@ export const destroy = async (req,res)=> {
 
 export const update = async (req,res)=>{
     try {
-        const {_id} = req.params; 
         const {email} = req.body;
-        const user = await UserModel.findByIdAndUpdate(_id, {confirmEmail:true});
+        const user = await UserModel.findByIdAndUpdate(req.userId, {confirmEmail:true});
         return res.json ({message:"success", user});
     } catch (error) {
         return res.json({message:'err:', error})
     }
 }
+
